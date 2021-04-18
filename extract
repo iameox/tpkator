@@ -1,0 +1,49 @@
+#!/bin/bash
+
+function extract() {
+    [[ "$(head -c 4)" == "KAPD" ]] || return 1
+
+    sections="$(head -c 2 | perl -0777 -ne 'print unpack "v"')"
+    for i in $(seq 1 "$sections"); do
+        sizes+=("$(head -c 4 | perl -0777 -ne 'print unpack "V"')")
+    done
+
+    for i in $(seq 1 "$sections"); do
+        length="$(head -c 2 | perl -0777 -ne 'print unpack "v"')"
+        names+=("$(head -c "$length")")
+    done
+
+    for i in $(seq 1 "$sections"); do
+        head -c "${sizes[i-1]}" > "sections/${names[i-1]}"
+    done
+}
+
+[ -z "$1" -o -z "$2" ] && echo "Usage: $0 <infile> <outfile>" && exit 1
+
+mkdir -p sections frames
+if ! zlib-flate -uncompress < "$1" | extract; then
+    echo "File not recognized: '$1'" >&2
+
+    rm -rf frames sections
+    exit 1
+fi
+
+frames="$(jq -r ".frames | length" sections/j)"
+for i in $(seq 1 "$frames"); do
+    data="$(jq -r ".frames[$i-1]" sections/j)"
+
+    file="$(echo "$data" | jq -r ".filename")"
+    extent="$(echo "$data" | jq -r '"\(.sourceSize.w)x\(.sourceSize.h)-\(.spriteSourceSize.x)-\(.spriteSourceSize.y)"')"
+    
+    if [[ "$(echo "$data" | jq -r '.rotated')" == "true" ]]; then
+        crop="$(echo "$data" | jq -r '.frame | "\(.h)x\(.w)+\(.x)+\(.y)"')"
+        convert jxr:sections/t -crop "$crop" -rotate -90 -background none -extent "$extent" "frames/$file"
+    else
+        crop="$(echo "$data" | jq -r '.frame | "\(.w)x\(.h)+\(.x)+\(.y)"')"
+        convert jxr:sections/t -crop "$crop" -background none -extent "$extent" "frames/$file"
+    fi
+done
+
+echo "$(jq -r '.scale.original_size | "\(.width)x\(.height)px"' sections/m)"
+convert frames/*.png +append "$2"
+rm -rf frames sections

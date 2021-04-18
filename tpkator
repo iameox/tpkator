@@ -1,0 +1,13 @@
+#!/bin/bash
+
+[ -z "$1" -o -z "$2" ] && echo "Usage: $0 <indir> <outdir>" && exit 1
+indir="${1%/}"
+outdir="${2%/}"
+
+for infile in $(find $1 -type f); do
+    fulldir="$outdir/$(echo "$infile" | perl -0777 -ne "/^$indir\/(.*\/)?(.*?)$/ && print "'$1')"
+    outfile="$fulldir$(echo "$infile" | perl -0777 -ne '/^(.*\/)?(.*?)\.(tpk|png)?$/ && print $2').png"
+
+    mkdir -p "$fulldir"
+    echo "$outfile: $(./extract "$infile" "$outfile")" >> sizes.txt
+done
