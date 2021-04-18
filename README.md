@@ -1,5 +1,5 @@
 # TPKator
-Extracts data from Club Penguin's Card-Jitsu Snow .tpk files.
+Extract data from Club Penguin's Card-Jitsu Snow .tpk files.
 
 ## Installation
 It's just 2 Bash files.
