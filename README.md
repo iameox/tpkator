@@ -13,6 +13,6 @@ I tested it on WSL Ubuntu 18.04 (ImageMagick 7.0.11-8, Perl 5.26.1, jq 1.5-1).
                    # The frames are converted to PNG and stored in frames/.
 
 ./tpkator <indir> <outdir> # Tries to extract data from the files of <indir> and append all the frames together.
-                           # The generated PNG spritesheet is stored in <outdir>/ (the folder structure is kept).
+                           # The generated spritesheet is stored in <outdir>/ (the folder structure is kept).
                            # The sprite sizes are written to sizes.txt.
 ```
