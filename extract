@@ -18,7 +18,7 @@ function extract() {
     done
 }
 
-[ -z "$1" -o -z "$2" ] && echo "Usage: $0 <infile> <outfile>" && exit 1
+[ -z "$1" ] && echo "Usage: $0 <infile>" && exit 1
 
 mkdir -p sections frames
 if ! zlib-flate -uncompress < "$1" | extract; then
@@ -43,7 +43,3 @@ for i in $(seq 1 "$frames"); do
         convert jxr:sections/t -crop "$crop" -background none -extent "$extent" "frames/$file"
     fi
 done
-
-echo "$(jq -r '.scale.original_size | "\(.width)x\(.height)px"' sections/m)"
-convert frames/*.png +append "$2"
-rm -rf frames sections
