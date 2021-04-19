@@ -8,9 +8,11 @@ I tested it on WSL Ubuntu 18.04 (ImageMagick 7.0.11-8, Perl 5.26.1, jq 1.5-1).
 
 ## Launch
 ```bash
-./extract <infile> <outfile> # Tries to extract data from <infile> into <outfile>.
+./extract <infile> # Tries to retrieve data from <infile>.
+                   # The file sections (t, j, i, m, etc.) are extracted to sections/.
+                   # The frames are converted to PNG and stored in frames/.
 
-./tpkator <indir> <outdir> # Tries to extract data from the files of <indir> into <outdir>.
-                           # The sprite sizes are written to the file `sizes.txt`.
-                           # Keeps the folder structure.
+./tpkator <indir> <outdir> # Tries to extract data from the files of <indir> and append all the frames together.
+                           # The generated PNG spritesheet is stored in <outdir>/ (the folder structure is kept).
+                           # The sprite sizes are written to sizes.txt.
 ```
