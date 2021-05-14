@@ -26,6 +26,9 @@ if ! zlib-flate -uncompress < "$1" | extract; then
     exit 1
 fi
 
-eval "$(jq -r '.frames|map(.|="convert jxr:sections/t -background none -crop "+(.rotated as $r|.frame|if $r then"\(.h)x\(.w)+\(.x)+\(.y) -rotate -90"
+cp sections/t frames/temp.jxr
+JxrDecApp -i frames/temp.jxr -o frames/temp.tif
+eval "$(jq -r '.frames|map(.|="convert frames/temp.tif -background none -crop "+(.rotated as $r|.frame|if $r then"\(.h)x\(.w)+\(.x)+\(.y) -rotate -90"
     else"\(.w)x\(.h)+\(.x)+\(.y)"end)+" -extent "+(.sourceSize|"\(.w)x\(.h)")+(.spriteSourceSize|map_values(.|=-.|tostring|scan("-.+")//"+"+.)|.x+.y)
     +" frames/\(.filename)")|join("&&")' sections/j)"
+rm frames/temp.*
