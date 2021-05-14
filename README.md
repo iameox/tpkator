@@ -25,7 +25,7 @@ I tested it on WSL Ubuntu 18.04 (ImageMagick 7.0.11-8, Perl 5.26.1, jq 1.5-1).
       "count": "number of sprites in spritesheet",
       "width": "sprite width",
       "height": "sprite height",
-      "interval": "sprite duration in ms (1000/interval = framerate)",
+      "interval": "sprite duration in ms (1000/interval = framerate)"
     }
   ]
 }
