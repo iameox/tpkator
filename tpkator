@@ -1,17 +1,27 @@
 #!/bin/bash
 
 [ -z "$1" -o -z "$2" ] && echo "Usage: $0 <indir> <outdir>" && exit 1
-indir="${1%/}"
+export indir="${1%/}"
 outdir="${2%/}"
 
+mkdir -p "$outdir"
+json="$(jq -n '{images:[]}')"
+
 for infile in $(find $1 -type f); do
-    fulldir="$outdir/$(echo "$infile" | perl -0777 -ne "/^$indir\/(.*\/)?(.*?)$/ && print "'$1')"
-    outfile="$fulldir$(echo "$infile" | perl -0777 -ne '/^(.*\/)?(.*?)\.(tpk|png)?$/ && print $2').png"
+    dirtree="$(echo "$infile" | perl -0777 -ne '/^$ENV{indir}\/(.*\/)?(.*?)$/ && print $1')"
+    outfile="$dirtree$(echo "$infile" | perl -0777 -ne '/^(.*\/)?(.*?)\.(tpk|png)?$/ && print $2').png"
 
-    mkdir -p "$fulldir"
-    ./extract "$infile" "$outfile"
+    mkdir -p "$outdir/$dirtree"
+    ./extract "$infile"
 
-    echo "$outfile: $(jq -r '.scale.original_size | "\(.width)x\(.height)px"' sections/m)" >> sizes.txt
-    convert frames/*.png +append "$outfile"
+    count="$(echo frames/*.png | wc -w)"
+    read width height <<< "$(echo frames/*.png | awk '{ print $1; }' | xargs identify -format '%[fx:w] %[fx:h]')"
+    interval="$([ -f i ] && cat i | perl -0777 -ne 'print unpack "N!"' || echo 67)"
+
+    convert frames/*.png +append "$outdir/$outfile"
+    json="$(echo "$json" | jq --arg f "$outfile" --arg c "$count" --arg w "$width" --arg h "$height" --arg i "$interval" '.images+=[{file:$f,count:$c
+        ,width:$w,height:$h,interval:$i}]')";
     rm -rf frames sections
 done
+
+echo "$json" > "$outdir/images.json"
