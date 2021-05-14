@@ -3,8 +3,8 @@ Extract data from Club Penguin's Card-Jitsu Snow .tpk files.
 
 ## Installation
 It's just 2 Bash files.
-You need `imagemagick` (`convert` and `identify`), `jq` and `perl` installed.  
-I tested it on WSL Ubuntu 18.04 (ImageMagick 7.0.11-8, Perl 5.26.1, jq 1.5-1).
+You need `imagemagick` (`convert` and `identify`), `jq`, `libjxr-tools` (`JxrDecApp`) and `perl` installed.  
+I tested it on WSL Ubuntu 18.04 (ImageMagick 7.0.11-8, jq 1.5-1, libjxr-tools 1.1-6build1 and Perl 5.26.1).
 
 ## Launch
 ```bash
@@ -15,6 +15,7 @@ I tested it on WSL Ubuntu 18.04 (ImageMagick 7.0.11-8, Perl 5.26.1, jq 1.5-1).
 ./tpkator <indir> <outdir> # Tries to extract data from the files of <indir> and append all the frames of one image together.
                            # The generated spritesheet is stored in <outdir> (the folder structure is kept).
                            # Image data is written to <outdir>/images.json at the end of the script (see below).
+                           
 ```
 ## Structure of images.json
 ```json
