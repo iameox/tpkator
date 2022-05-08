@@ -26,7 +26,7 @@ I tested it on WSL Ubuntu 18.04 (ImageMagick 7.0.11-8, jq 1.5-1, libjxr-tools 1.
       "count": "number of sprites in spritesheet",
       "width": "sprite width",
       "height": "sprite height",
-      "interval": "sprite duration in ms (1000/interval = framerate)"
+      "interval": "don't know what this is (not the framerate) - I kept it just in case"
     }
   ]
 }
